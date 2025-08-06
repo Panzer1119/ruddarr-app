@@ -15,11 +15,15 @@ struct QueueSort: Equatable {
 
         case byTitle
         case byAdded
+        case byProgress
+        case byTimeRemaining
 
         var label: some View {
             switch self {
             case .byTitle: Label("Title", systemImage: "textformat.abc")
             case .byAdded: Label("Added", systemImage: "calendar.badge.plus")
+            case .byProgress: Label("Progress", systemImage: "percent")
+            case .byTimeRemaining: Label("Time Remaining", systemImage: "hourglass")
             }
         }
 
@@ -29,6 +33,10 @@ struct QueueSort: Equatable {
                 lhs.titleLabel < rhs.titleLabel
             case .byAdded:
                 lhs.added ?? Date.distantPast < rhs.added ?? Date.distantPast
+            case .byProgress:
+                (lhs.size > 0 && lhs.sizeleft >= 0 ? lhs.sizeleft / lhs.size : 1) > (rhs.size > 0 && rhs.sizeleft >= 0 ? rhs.sizeleft / rhs.size : 1)
+            case .byTimeRemaining:
+                lhs.estimatedCompletionTime ?? Date.distantPast < rhs.estimatedCompletionTime ?? Date.distantPast
             }
         }
     }
